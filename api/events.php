@@ -29,7 +29,7 @@ try {
     $statement = $database->query(
         'SELECT Area, Club, Event, Course, Length, Climb, Controls,
                 Minutes, Seconds, Date, Scale, "Contour interval",
-                Country, Punch, Time, Year
+                Country, Punch, Time, Year, Latitude, Longitude
          FROM events
          ORDER BY Year DESC, Date DESC, Area COLLATE NOCASE'
     );

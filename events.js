@@ -1,3 +1,6 @@
+    import L from "leaflet";
+    import "leaflet/dist/leaflet.css";
+
     const pageSize = 15;
     const fields = ["Area", "Club", "Event", "Course", "Length", "Climb", "Controls", "Minutes", "Seconds", "Date", "Scale", "Contour interval", "Country", "Punch", "Time", "Year"];
     let events = [];
@@ -6,6 +9,8 @@
     let sortField = "Year";
     let sortDirection = -1;
     let searchTimer;
+    let eventMap;
+    let eventMarkers;
 
     const byId = (id) => document.getElementById(id);
     const numericFields = new Set(["Length", "Climb", "Controls", "Year"]);
@@ -75,7 +80,53 @@
       if (resetPage) currentPage = 1;
       renderStats();
       renderCharts();
+      renderMap();
       renderTable();
+    }
+
+    function getCoordinates(event) {
+      if (event.Latitude === null || event.Latitude === "" || event.Longitude === null || event.Longitude === "") return null;
+      const latitude = Number(event.Latitude);
+      const longitude = Number(event.Longitude);
+      if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90 ||
+          !Number.isFinite(longitude) || longitude < -180 || longitude > 180) return null;
+      return [latitude, longitude];
+    }
+
+    function initializeMap() {
+      eventMap = L.map(byId("eventMap"), { scrollWheelZoom: false }).setView([20, 0], 2);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(eventMap);
+      eventMarkers = L.featureGroup().addTo(eventMap);
+    }
+
+    function renderMap() {
+      eventMarkers.clearLayers();
+      let georeferencedCount = 0;
+      filteredEvents.forEach((event) => {
+        const coordinates = getCoordinates(event);
+        if (!coordinates) return;
+        georeferencedCount++;
+
+        const popup = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = safeText(event.Area);
+        popup.appendChild(title);
+        const details = document.createElement("div");
+        details.textContent = [event.Event, event.Date, event.Country].filter(Boolean).join(" · ");
+        popup.appendChild(details);
+
+        L.circleMarker(coordinates, {
+          radius: 6,
+          color: "#1b5942",
+          weight: 1,
+          fillColor: "#80b395",
+          fillOpacity: 0.85,
+        }).bindPopup(popup).addTo(eventMarkers);
+      });
+      byId("mapCount").textContent = `${formatter.format(georeferencedCount)} ${georeferencedCount === 1 ? "event" : "events"}`;
     }
 
     function renderStats() {
@@ -292,4 +343,5 @@
       }, new Map()).entries()].sort((a, b) => a[0] - b[0])
     ));
 
+    initializeMap();
     loadEvents();

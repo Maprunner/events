@@ -29,4 +29,6 @@ to run the build.
 
 Sync /dist to the server
 
+The dashboard map uses Leaflet with OpenStreetMap tiles and displays georeferenced events matching the active filters.
+
 Copy api directory to server

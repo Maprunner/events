@@ -59,6 +59,9 @@
     .club-track { height: 7px; border-radius: 8px; background: #f0f3ef; overflow: hidden; }
     .club-fill { height: 100%; background: #80b395; border-radius: inherit; }
     .club-count { text-align: right; color: #7c887e; font-variant-numeric: tabular-nums; }
+    .map-card { margin-bottom: 18px; }
+    .event-map { height: 440px; margin-top: 16px; border-radius: 9px; background: #eaf0e9; }
+    .event-map .leaflet-popup-content { line-height: 1.6; }
     .filters { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
     .search-wrap { position: relative; flex: 1 1 270px; min-width: 210px; }
     .search-icon { position: absolute; left: 12px; top: 11px; color: #89958b; pointer-events: none; }
@@ -116,6 +119,7 @@
       .stat-value { font-size: 23px; }
       .card { padding: 17px 15px; }
       .overview { gap: 11px; }
+      .event-map { height: 350px; }
       .filters { gap: 8px; }
       .search-wrap { flex-basis: 100%; }
       .year-range { flex: 1; }
