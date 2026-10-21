@@ -3,32 +3,30 @@ Simon's orienteering events
 
 ## Local development
 
-Install Node.js, PHP with PDO SQLite enabled, and npm dependencies:
+````sh
+npm install 
+````
 
-```sh
-npm ci
-```
+to make sure you have all necessary dependencies installed.
 
-Run the PHP API and Vite in separate terminals:
-
-```sh
-npm run dev:api
+````sh
 npm run dev
-```
+````
+to start the vite development server.
 
-Open the Vite URL shown in the terminal (normally `http://127.0.0.1:5173`).
-Vite proxies `/api/events.php` to the local PHP server.
+You need to be running a separate server to manage the API calls. At present this is assumed to be XAMPP or similar. In future I guess there should be a way of doing this in node.
 
-## Build and deploy with Nginx
+You should now be able to access events at http://127.0.0.1:5173/events/
 
-Build the static dashboard and copy the generated `dist` directory to
-`/var/www/events/dist`. Keep `events.db` at `/var/www/events/events.db`, outside
-the web root. Configure Nginx with [nginx.conf](./nginx.conf), adjusting the
-PHP-FPM address and paths to match the server, then reload Nginx. The PHP-FPM
-user needs read access to the database.
+Vite proxies `/api/events.php` to the XAMPP server.
 
-Create or refresh the production build with:
+## Build and deploy
 
 ```sh
 npm run build
 ```
+to run the build.
+
+Sync /dist to the server
+
+Copy api directory to server

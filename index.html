@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f6f2">
-  <title>Event Atlas — Explore your events</title>
+  <title>Maprunner Orienteering Event Atlas</title>
   <link rel="stylesheet" href="/events.css">
 </head>
 <body>
@@ -14,16 +14,16 @@
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path d="M5 19.5 9.3 5l3.1 8 2.1-5 4.5 11.5H5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9.3" cy="5" r="1.5" fill="#DCEBDD"/></svg>
         </span>
-        Event Atlas
+        Maprunner Event Atlas
       </div>
-      <div class="top-note"><span class="live-dot"></span>Private local dashboard</div>
+      <div class="top-note"><span class="live-dot"></span>Dashboard</div>
     </header>
 
     <section class="heading-row">
       <div>
-        <div class="eyebrow">Your event archive</div>
-        <h1>Explore your events</h1>
-        <p class="intro">A clearer view of every place, club, and course in your collection.</p>
+        <div class="eyebrow">Orienteering event archive</div>
+        <h1>Simon Errington</h1>
+        <p class="intro">Orienteering events run since 1977</p>
       </div>
       <div class="updated" id="updatedLabel">Loading your archive…</div>
     </section>
@@ -31,10 +31,10 @@
     <div id="errorMessage" class="error" role="alert"></div>
 
     <section class="stats" aria-label="Event archive summary">
-      <article class="stat-card"><div class="stat-label">Events in view</div><div class="stat-value" id="statEvents">—</div><div class="stat-foot" id="statEventsFoot">Across your archive</div></article>
-      <article class="stat-card"><div class="stat-label">Unique areas</div><div class="stat-value" id="statAreas">—</div><div class="stat-foot">Mapped destinations</div></article>
-      <article class="stat-card"><div class="stat-label">Active clubs</div><div class="stat-value" id="statClubs">—</div><div class="stat-foot">Organizing events</div></article>
-      <article class="stat-card"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">—</div><div class="stat-foot">Across the collection</div></article>
+      <article class="stat-card"><div class="stat-label">Events</div><div class="stat-value" id="statEvents">—</div><div class="stat-foot" id="statEventsFoot">Across the archive</div></article>
+      <article class="stat-card"><div class="stat-label">Unique areas</div><div class="stat-value" id="statAreas">—</div><div class="stat-foot">Based on map name</div></article>
+      <article class="stat-card"><div class="stat-label">Organising clubs</div><div class="stat-value" id="statClubs">—</div><div class="stat-foot"></div></article>
+      <article class="stat-card"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">—</div><div class="stat-foot">Across the archive</div></article>
     </section>
 
     <section class="overview" aria-label="Event trends">
@@ -47,7 +47,7 @@
       </article>
       <article class="card">
         <div class="card-heading">
-          <div><h2>Most active clubs</h2><div class="card-subtitle">By number of events in view</div></div>
+          <div><h2>Organising clubs</h2><div class="card-subtitle">By number of events in view</div></div>
         </div>
         <div class="club-list" id="clubList"></div>
       </article>
@@ -101,7 +101,7 @@
         </div>
       </div>
     </section>
-    <footer><span>Event Atlas · A private view of your local archive</span><span>Data is read directly from events.db and stays on this device.</span></footer>
+    <footer><span>Maprunner Event Atlas</span><span>Data source: events.db</span></footer>
   </main>
   <script type="module" src="/events.js" defer></script>
 </body>

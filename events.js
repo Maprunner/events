@@ -10,7 +10,14 @@
     const byId = (id) => document.getElementById(id);
     const numericFields = new Set(["Length", "Climb", "Controls", "Year"]);
     const formatter = new Intl.NumberFormat();
+    const lengthFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const safeText = (value) => value === null || value === undefined || value === "" ? "—" : String(value);
+    const formatTime = (value) => {
+      const match = /^(\d+):([0-5]\d):([0-5]\d)$/.exec(String(value ?? ""));
+      if (!match) return value;
+      const minutes = Number(match[1]) * 60 + Number(match[2]);
+      return `${String(minutes).padStart(2, "0")}:${match[3]}`;
+    };
 
     async function loadEvents() {
       try {
@@ -79,7 +86,7 @@
       byId("statAreas").textContent = formatter.format(areas.size);
       byId("statClubs").textContent = formatter.format(clubs.size);
       byId("statCountries").textContent = formatter.format(countries.size);
-      byId("statEventsFoot").textContent = filteredEvents.length === events.length ? "Across your archive" : `Of ${formatter.format(events.length)} total events`;
+      byId("statEventsFoot").textContent = filteredEvents.length === events.length ? "Across the archive" : `Of ${formatter.format(events.length)} total events`;
     }
 
     function renderCharts() {
@@ -216,10 +223,10 @@
         appendCell(row, event.Club);
         appendCell(row, event.Date);
         appendCell(row, event.Country);
-        appendCell(row, event.Length === null ? null : `${event.Length} km`, "numeric");
+        appendCell(row, event.Length === null ? null : `${lengthFormatter.format(Number(event.Length))} km`, "numeric");
         appendCell(row, event.Climb === null ? null : `${event.Climb} m`, "numeric");
         appendCell(row, event.Controls, "numeric");
-        appendCell(row, event.Time, "numeric");
+        appendCell(row, formatTime(event.Time), "numeric");
         body.appendChild(row);
       });
       if (!pageRows.length) {
