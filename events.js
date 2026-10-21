@@ -14,7 +14,8 @@
 
     async function loadEvents() {
       try {
-        const response = await fetch("/api/events");
+        const target = import.meta.env.PROD ? "/events/api" : "/api";
+        const response = await fetch(target + "/events.php");
         if (!response.ok) throw new Error(`Server returned ${response.status} ${response.statusText}`);
         events = await response.json();
         if (!Array.isArray(events)) throw new Error("The events endpoint returned an unexpected response.");
@@ -27,7 +28,7 @@
         byId("updatedLabel").textContent = `${formatter.format(events.length)} records · Updated just now`;
         refresh();
       } catch (error) {
-        byId("errorMessage").textContent = `Unable to load events: ${error.message}. Make sure server.py is running beside events.db.`;
+        byId("errorMessage").textContent = `Unable to load events: ${error.message}. Make sure the PHP API is running and can read events.db.`;
         byId("errorMessage").style.display = "block";
         byId("updatedLabel").textContent = "Archive unavailable";
         byId("resultsCount").textContent = "No records loaded";
