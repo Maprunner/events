@@ -1,8 +1,10 @@
     import L from "leaflet";
     import "leaflet/dist/leaflet.css";
+    import "leaflet.markercluster";
+    import "leaflet.markercluster/dist/MarkerCluster.css";
+    import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
     const pageSize = 15;
-    const fields = ["Area", "Club", "Event", "Course", "Length", "Climb", "Controls", "Minutes", "Seconds", "Date", "Scale", "Contour interval", "Country", "Punch", "Time", "Year"];
     let events = [];
     let filteredEvents = [];
     let currentPage = 1;
@@ -65,14 +67,20 @@
       const from = fromValue === "" ? -Infinity : Number(fromValue);
       const to = toValue === "" ? Infinity : Number(toValue);
       const country = byId("countryFilter").value;
+      const searchField = document.querySelector('input[name="searchField"]:checked').value;
 
       return events.filter((event) => {
         const year = Number(event.Year);
         if (year < from || year > to) return false;
         if (country && event.Country !== country) return false;
-        if (query && !fields.some((field) => String(event[field] ?? "").toLocaleLowerCase().includes(query))) return false;
+        if (query && !String(event[searchField] ?? "").toLocaleLowerCase().includes(query)) return false;
         return true;
       });
+    }
+
+    function updateSearchPlaceholder() {
+      const searchField = document.querySelector('input[name="searchField"]:checked').value;
+      byId("searchInput").placeholder = `Search ${searchField.toLocaleLowerCase()}…`;
     }
 
     function refresh(resetPage = true) {
@@ -99,7 +107,14 @@
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(eventMap);
-      eventMarkers = L.featureGroup().addTo(eventMap);
+      eventMarkers = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        iconCreateFunction: (cluster) => L.divIcon({
+          html: `<span>${formatter.format(cluster.getChildCount())}</span>`,
+          className: "event-marker-cluster",
+          iconSize: L.point(42, 42),
+        }),
+      }).addTo(eventMap);
     }
 
     function renderMap() {
@@ -313,11 +328,19 @@
       clearTimeout(searchTimer);
       searchTimer = setTimeout(() => refresh(), 120);
     });
+    document.querySelectorAll('input[name="searchField"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        updateSearchPlaceholder();
+        refresh();
+      });
+    });
     byId("yearFrom").addEventListener("input", () => refresh());
     byId("yearTo").addEventListener("input", () => refresh());
     byId("countryFilter").addEventListener("change", () => refresh());
     byId("resetButton").addEventListener("click", () => {
       byId("searchInput").value = "";
+      document.querySelector('input[name="searchField"][value="Area"]').checked = true;
+      updateSearchPlaceholder();
       byId("yearFrom").value = "";
       byId("yearTo").value = "";
       byId("countryFilter").value = "";

@@ -65,8 +65,14 @@
       <div class="filters">
         <label class="search-wrap">
           <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-          <input id="searchInput" class="control" type="search" placeholder="Search areas, courses, clubs…" autocomplete="off" aria-label="Search events">
+          <input id="searchInput" class="control" type="search" placeholder="Search area…" autocomplete="off" aria-label="Search events">
         </label>
+        <fieldset class="search-field-options" aria-label="Search in">
+          <label><input type="radio" name="searchField" value="Area" checked> Area</label>
+          <label><input type="radio" name="searchField" value="Event"> Event</label>
+          <label><input type="radio" name="searchField" value="Club"> Club</label>
+          <label><input type="radio" name="searchField" value="Country"> Country</label>
+        </fieldset>
         <label class="year-range" aria-label="Filter by year range">
           <input id="yearFrom" class="control year-input" type="number" placeholder="From" aria-label="From year">
           <span>—</span>
