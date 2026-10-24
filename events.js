@@ -305,11 +305,25 @@
       });
     }
 
+    function parseDateValue(value) {
+      if (value === null || value === undefined || value === "") return Number.NaN;
+      const date = new Date(String(value).trim());
+      return Number.isNaN(date.getTime()) ? Number.NaN : date.getTime();
+    }
+
     function compareEvents(a, b) {
       const left = a[sortField];
       const right = b[sortField];
       if (left === null || left === undefined || left === "") return right === null || right === undefined || right === "" ? 0 : 1;
       if (right === null || right === undefined || right === "") return -1;
+      if (sortField === "Date") {
+        const leftDate = parseDateValue(left);
+        const rightDate = parseDateValue(right);
+        if (Number.isNaN(leftDate) && Number.isNaN(rightDate)) return 0;
+        if (Number.isNaN(leftDate)) return 1 * sortDirection;
+        if (Number.isNaN(rightDate)) return -1 * sortDirection;
+        return (leftDate - rightDate) * sortDirection;
+      }
       if (numericFields.has(sortField)) return (Number(left) - Number(right)) * sortDirection;
       return String(left).localeCompare(String(right), undefined, { numeric: true, sensitivity: "base" }) * sortDirection;
     }
