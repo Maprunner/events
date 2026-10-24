@@ -19,12 +19,55 @@
     const formatter = new Intl.NumberFormat();
     const lengthFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const safeText = (value) => value === null || value === undefined || value === "" ? "—" : String(value);
+    const parseTimeSeconds = (value) => {
+      if (value === null || value === undefined || value === "") return 0;
+      const match = /^(\d+):([0-5]\d):([0-5]\d)$/.exec(String(value).trim());
+      if (!match) return 0;
+      return Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]);
+    };
     const formatTime = (value) => {
       const match = /^(\d+):([0-5]\d):([0-5]\d)$/.exec(String(value ?? ""));
       if (!match) return value;
       const minutes = Number(match[1]) * 60 + Number(match[2]);
       return `${String(minutes).padStart(2, "0")}:${match[3]}`;
     };
+    const formatDuration = (totalSeconds) => {
+      if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return "00:00:00";
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const seconds = Math.floor(totalSeconds % 60);
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    };
+
+    function applyYearBounds() {
+      const years = events.map((event) => Number(event.Year)).filter(Number.isFinite);
+      if (!years.length) return;
+      const minYear = Math.min(...years);
+      const maxYear = Math.max(...years);
+      byId("yearFrom").min = String(minYear);
+      byId("yearFrom").max = String(maxYear);
+      byId("yearTo").min = String(minYear);
+      byId("yearTo").max = String(maxYear);
+      byId("yearFrom").placeholder = String(minYear);
+      byId("yearTo").placeholder = String(maxYear);
+
+      const fromValue = byId("yearFrom").value;
+      const toValue = byId("yearTo").value;
+      if (fromValue !== "") {
+        const fromYear = Number(fromValue);
+        if (fromYear < minYear) byId("yearFrom").value = String(minYear);
+        else if (fromYear > maxYear) byId("yearFrom").value = String(maxYear);
+      }
+      if (toValue !== "") {
+        const toYear = Number(toValue);
+        if (toYear < minYear) byId("yearTo").value = String(minYear);
+        else if (toYear > maxYear) byId("yearTo").value = String(maxYear);
+      }
+      if (byId("yearFrom").value !== "" && byId("yearTo").value !== "" && Number(byId("yearFrom").value) > Number(byId("yearTo").value)) {
+        byId("yearTo").value = byId("yearFrom").value;
+      }
+    }
 
     async function loadEvents() {
       try {
@@ -34,11 +77,7 @@
         events = await response.json();
         if (!Array.isArray(events)) throw new Error("The events endpoint returned an unexpected response.");
         populateCountries();
-        const years = events.map((event) => Number(event.Year)).filter(Number.isFinite);
-        if (years.length) {
-          byId("yearFrom").placeholder = String(Math.min(...years));
-          byId("yearTo").placeholder = String(Math.max(...years));
-        }
+        applyYearBounds();
         byId("updatedLabel").textContent = `${formatter.format(events.length)} records · Updated just now`;
         refresh();
       } catch (error) {
@@ -148,11 +187,23 @@
       const areas = new Set(filteredEvents.map((event) => event.Area).filter(Boolean));
       const clubs = new Set(filteredEvents.map((event) => event.Club).filter(Boolean));
       const countries = new Set(filteredEvents.map((event) => event.Country).filter(Boolean));
+      const totalDistance = filteredEvents.reduce((sum, event) => sum + (Number(event.Length) || 0), 0);
+      const totalClimb = filteredEvents.reduce((sum, event) => sum + (Number(event.Climb) || 0), 0);
+      const totalControls = filteredEvents.reduce((sum, event) => sum + (Number(event.Controls) || 0), 0);
+      const totalTimeSeconds = filteredEvents.reduce((sum, event) => sum + parseTimeSeconds(event.Time), 0);
       byId("statEvents").textContent = formatter.format(filteredEvents.length);
       byId("statAreas").textContent = formatter.format(areas.size);
       byId("statClubs").textContent = formatter.format(clubs.size);
       byId("statCountries").textContent = formatter.format(countries.size);
+      byId("statDistance").textContent = `${lengthFormatter.format(totalDistance)} km`;
+      byId("statClimb").textContent = `${formatter.format(totalClimb)} m`;
+      byId("statTime").textContent = formatDuration(totalTimeSeconds);
+      byId("statControls").textContent = formatter.format(totalControls);
       byId("statEventsFoot").textContent = filteredEvents.length === events.length ? "Across the archive" : `Of ${formatter.format(events.length)} total events`;
+      byId("statDistanceFoot").textContent = filteredEvents.length ? "Across selected events" : "No events selected";
+      byId("statClimbFoot").textContent = filteredEvents.length ? "Across selected events" : "No events selected";
+      byId("statTimeFoot").textContent = filteredEvents.length ? "Across selected events" : "No events selected";
+      byId("statControlsFoot").textContent = filteredEvents.length ? "Across selected events" : "No events selected";
     }
 
     function renderCharts() {
@@ -334,8 +385,29 @@
         refresh();
       });
     });
-    byId("yearFrom").addEventListener("input", () => refresh());
-    byId("yearTo").addEventListener("input", () => refresh());
+    const clampYearInputs = () => {
+      const fromInput = byId("yearFrom");
+      const toInput = byId("yearTo");
+      const minYear = Number(fromInput.min || 0);
+      const maxYear = Number(toInput.max || 9999);
+
+      if (fromInput.value !== "") {
+        const fromYear = Number(fromInput.value);
+        if (fromYear < minYear) fromInput.value = String(minYear);
+        if (fromYear > maxYear) fromInput.value = String(maxYear);
+      }
+      if (toInput.value !== "") {
+        const toYear = Number(toInput.value);
+        if (toYear < minYear) toInput.value = String(minYear);
+        if (toYear > maxYear) toInput.value = String(maxYear);
+      }
+      if (fromInput.value !== "" && toInput.value !== "" && Number(fromInput.value) > Number(toInput.value)) {
+        toInput.value = fromInput.value;
+      }
+    };
+
+    byId("yearFrom").addEventListener("input", () => { clampYearInputs(); refresh(); });
+    byId("yearTo").addEventListener("input", () => { clampYearInputs(); refresh(); });
     byId("countryFilter").addEventListener("change", () => refresh());
     byId("resetButton").addEventListener("click", () => {
       byId("searchInput").value = "";

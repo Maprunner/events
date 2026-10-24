@@ -35,7 +35,9 @@
     .intro { color: var(--muted); margin: 0; font-size: 14px; }
     .heading-row { display: flex; align-items: end; justify-content: space-between; margin-bottom: 23px; gap: 20px; }
     .updated { color: var(--muted); font-size: 12px; white-space: nowrap; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 18px; }
+    .stats { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 15px; margin-bottom: 18px; }
+    @media (max-width: 1220px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    @media (max-width: 760px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     .card, .stat-card { background: var(--paper); border: 1px solid #e9ece7; border-radius: 14px; box-shadow: var(--shadow); }
     .stat-card { padding: 18px 20px; min-height: 105px; }
     .stat-label { color: var(--muted); font-size: 12px; font-weight: 550; }
