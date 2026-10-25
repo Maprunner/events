@@ -4,26 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f6f2">
-  <title>Maprunner Orienteering Event Atlas</title>
+  <title>Maprunner Orienteering Event Archive</title>
   <link rel="stylesheet" href="/events.css">
 </head>
 <body>
   <main class="shell">
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M5 19.5 9.3 5l3.1 8 2.1-5 4.5 11.5H5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9.3" cy="5" r="1.5" fill="#DCEBDD"/></svg>
-        </span>
-        Maprunner Event Atlas
-      </div>
-      <div class="top-note"><span class="live-dot"></span>Dashboard</div>
-    </header>
-
     <section class="heading-row">
-      <div>
-        <div class="eyebrow">Orienteering event archive</div>
-        <h1>Simon Errington</h1>
-        <p class="intro">Orienteering events run since 1977</p>
+      <div class="heading-brand">
+        <img class="heading-logo" src="maprunner-logo.png" alt="Maprunner logo">
+        <div>
+          <div class="eyebrow">Orienteering event archive</div>
+          <h1>Simon Errington</h1>
+          <p class="intro">Orienteering events run since 1977</p>
+        </div>
       </div>
       <div class="updated" id="updatedLabel">Loading your archive…</div>
     </section>
@@ -34,17 +27,17 @@
       <article class="stat-card"><div class="stat-label">Events</div><div class="stat-value" id="statEvents">—</div><div class="stat-foot" id="statEventsFoot">Across the archive</div></article>
       <article class="stat-card"><div class="stat-label">Unique areas</div><div class="stat-value" id="statAreas">—</div><div class="stat-foot">Based on map name</div></article>
       <article class="stat-card"><div class="stat-label">Organising clubs</div><div class="stat-value" id="statClubs">—</div><div class="stat-foot"></div></article>
-      <article class="stat-card"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">—</div><div class="stat-foot">Across the archive</div></article>
-      <article class="stat-card"><div class="stat-label">Total distance</div><div class="stat-value" id="statDistance">—</div><div class="stat-foot" id="statDistanceFoot">Across selected events</div></article>
-      <article class="stat-card"><div class="stat-label">Total climb</div><div class="stat-value" id="statClimb">—</div><div class="stat-foot" id="statClimbFoot">Across selected events</div></article>
-      <article class="stat-card"><div class="stat-label">Total time</div><div class="stat-value" id="statTime">—</div><div class="stat-foot" id="statTimeFoot">Across selected events</div></article>
-      <article class="stat-card"><div class="stat-label">Total controls</div><div class="stat-value" id="statControls">—</div><div class="stat-foot" id="statControlsFoot">Across selected events</div></article>
+      <article class="stat-card"><div class="stat-label">Countries</div><div class="stat-value" id="statCountries">—</div><div class="stat-foot"></div></article>
+      <article class="stat-card"><div class="stat-label">Total distance</div><div class="stat-value" id="statDistance">—</div><div class="stat-foot" id="statDistanceFoot"></div></article>
+      <article class="stat-card"><div class="stat-label">Total climb</div><div class="stat-value" id="statClimb">—</div><div class="stat-foot" id="statClimbFoot"></div></article>
+      <article class="stat-card"><div class="stat-label">Total time</div><div class="stat-value" id="statTime">—</div><div class="stat-foot" id="statTimeFoot"></div></article>
+      <article class="stat-card"><div class="stat-label">Total controls</div><div class="stat-value" id="statControls">—</div><div class="stat-foot" id="statControlsFoot"></div></article>
     </section>
 
     <section class="overview" aria-label="Event trends">
       <article class="card">
         <div class="card-heading">
-          <div><h2>Events over time</h2><div class="card-subtitle">Annual events matching your filters</div></div>
+          <div><h2>Events</h2><div class="card-subtitle"></div></div>
           <div class="chart-total" id="chartRange">—</div>
         </div>
         <div class="chart-wrap"><svg id="yearChart" role="img" aria-label="Bar chart of events by year"></svg></div>
