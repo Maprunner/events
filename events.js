@@ -8,8 +8,8 @@
     let events = [];
     let filteredEvents = [];
     let currentPage = 1;
-    let sortField = "Year";
-    let sortDirection = -1;
+    let sortField = "Date";
+    let sortDirection = 1;
     let searchTimer;
     let eventMap;
     let eventMarkers;
