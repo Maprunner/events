@@ -125,6 +125,14 @@
     td { padding: 10px 13px; border-bottom: 1px solid #f0f2ef; color: #59665d; font-size: 11px; }
     tbody tr:hover { background: #fbfcfa; }
     td.area-cell { max-width: 230px; overflow: hidden; color: #283b30; font-weight: 650; text-overflow: ellipsis; }
+    .area-content { display: flex; min-width: 0; align-items: center; gap: 7px; }
+    .area-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .map-link {
+      display: inline-grid; flex: 0 0 auto; place-items: center; width: 23px; height: 23px; padding: 3px;
+      border: 0; border-radius: 5px; color: var(--green); background: transparent;
+    }
+    .map-link:hover, .map-link:focus-visible { color: var(--green-dark); background: var(--mint); }
+    .map-link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; }
     .tag { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 5px; color: #52705d; background: #eef4ef; font-size: 10px; }
     .numeric { font-variant-numeric: tabular-nums; }
     .empty { padding: 40px 15px; color: var(--muted); text-align: center; }

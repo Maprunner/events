@@ -13,6 +13,8 @@
     let searchTimer;
     let eventMap;
     let eventMarkers;
+    let eventMarkerByEvent = new Map();
+    let highlightedMarker;
 
     const byId = (id) => document.getElementById(id);
     const numericFields = new Set(["Length", "Climb", "Controls", "Year"]);
@@ -158,6 +160,8 @@
 
     function renderMap() {
       eventMarkers.clearLayers();
+      eventMarkerByEvent.clear();
+      highlightedMarker = null;
       let georeferencedCount = 0;
       filteredEvents.forEach((event) => {
         const coordinates = getCoordinates(event);
@@ -172,15 +176,31 @@
         details.textContent = [event.Event, event.Date, event.Country].filter(Boolean).join(" · ");
         popup.appendChild(details);
 
-        L.circleMarker(coordinates, {
+        const marker = L.circleMarker(coordinates, {
           radius: 6,
           color: "#1b5942",
           weight: 1,
           fillColor: "#80b395",
           fillOpacity: 0.85,
         }).bindPopup(popup).addTo(eventMarkers);
+        eventMarkerByEvent.set(event, marker);
       });
       byId("mapCount").textContent = `${formatter.format(georeferencedCount)} ${georeferencedCount === 1 ? "event" : "events"}`;
+    }
+
+    function focusEventOnMap(event) {
+      const marker = eventMarkerByEvent.get(event);
+      if (!marker) return;
+
+      if (highlightedMarker) {
+        highlightedMarker.setStyle({ radius: 6, color: "#1b5942", weight: 1, fillColor: "#80b395", fillOpacity: 0.85 });
+      }
+      highlightedMarker = marker;
+      marker.setStyle({ radius: 9, color: "#8b4e18", weight: 3, fillColor: "#f0a24d", fillOpacity: 1 });
+      eventMarkers.zoomToShowLayer(marker, () => {
+        eventMap.flyTo(marker.getLatLng(), Math.max(eventMap.getZoom(), 12));
+        marker.openPopup();
+      });
     }
 
     function renderStats() {
@@ -345,7 +365,42 @@
       body.replaceChildren();
       pageRows.forEach((event) => {
         const row = document.createElement("tr");
-        appendCell(row, event.Area, "area-cell");
+        const area = document.createElement("td");
+        area.className = "area-cell";
+        const areaContent = document.createElement("div");
+        areaContent.className = "area-content";
+        const areaName = document.createElement("span");
+        areaName.className = "area-name";
+        areaName.textContent = safeText(event.Area);
+        areaName.title = safeText(event.Area);
+        areaContent.appendChild(areaName);
+        if (getCoordinates(event)) {
+          const mapButton = document.createElement("button");
+          mapButton.type = "button";
+          mapButton.className = "map-link";
+          mapButton.setAttribute("aria-label", `Show ${safeText(event.Area)} on map`);
+          mapButton.title = "Show on map";
+          const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          icon.setAttribute("viewBox", "0 0 24 24");
+          icon.setAttribute("aria-hidden", "true");
+          const globe = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          globe.setAttribute("cx", "12");
+          globe.setAttribute("cy", "12");
+          globe.setAttribute("r", "9");
+          const meridian = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+          meridian.setAttribute("cx", "12");
+          meridian.setAttribute("cy", "12");
+          meridian.setAttribute("rx", "4");
+          meridian.setAttribute("ry", "9");
+          const latitude = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          latitude.setAttribute("d", "M3 12h18M4.5 7.5h15M4.5 16.5h15");
+          icon.append(globe, meridian, latitude);
+          mapButton.appendChild(icon);
+          mapButton.addEventListener("click", () => focusEventOnMap(event));
+          areaContent.appendChild(mapButton);
+        }
+        area.appendChild(areaContent);
+        row.appendChild(area);
         appendCell(row, event.Event);
         const course = document.createElement("td");
         const tag = document.createElement("span");
