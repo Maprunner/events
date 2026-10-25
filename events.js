@@ -19,6 +19,20 @@
     const byId = (id) => document.getElementById(id);
     const numericFields = new Set(["Length", "Climb", "Controls", "Year"]);
     const formatter = new Intl.NumberFormat();
+    const eventIcon = L.icon({
+      iconUrl: `${import.meta.env.BASE_URL}oflag.png`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -12],
+      className: "event-marker",
+    });
+    const highlightedEventIcon = L.icon({
+      iconUrl: `${import.meta.env.BASE_URL}oflag.png`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16],
+      className: "event-marker event-marker-highlighted",
+    });
     const lengthFormatter = new Intl.NumberFormat(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const safeText = (value) => value === null || value === undefined || value === "" ? "—" : String(value);
     const parseTimeSeconds = (value) => {
@@ -176,13 +190,7 @@
         details.textContent = [event.Event, event.Date, event.Country].filter(Boolean).join(" · ");
         popup.appendChild(details);
 
-        const marker = L.circleMarker(coordinates, {
-          radius: 6,
-          color: "#1b5942",
-          weight: 1,
-          fillColor: "#80b395",
-          fillOpacity: 0.85,
-        }).bindPopup(popup).addTo(eventMarkers);
+        const marker = L.marker(coordinates, { icon: eventIcon }).bindPopup(popup).addTo(eventMarkers);
         eventMarkerByEvent.set(event, marker);
       });
       byId("mapCount").textContent = `${formatter.format(georeferencedCount)} ${georeferencedCount === 1 ? "event" : "events"}`;
@@ -193,10 +201,12 @@
       if (!marker) return;
 
       if (highlightedMarker) {
-        highlightedMarker.setStyle({ radius: 6, color: "#1b5942", weight: 1, fillColor: "#80b395", fillOpacity: 0.85 });
+        highlightedMarker.setIcon(eventIcon);
+        highlightedMarker.setZIndexOffset(0);
       }
       highlightedMarker = marker;
-      marker.setStyle({ radius: 9, color: "#8b4e18", weight: 3, fillColor: "#f0a24d", fillOpacity: 1 });
+      marker.setIcon(highlightedEventIcon);
+      marker.setZIndexOffset(1000);
       eventMarkers.zoomToShowLayer(marker, () => {
         eventMap.flyTo(marker.getLatLng(), Math.max(eventMap.getZoom(), 12));
         marker.openPopup();
